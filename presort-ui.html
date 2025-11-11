@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PB Presort Shipment Tester</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 30px;
+        }
+        
+        .form-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .form-section h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 13px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .submit-section {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .result-section {
+            grid-column: 1 / -1;
+            margin-top: 20px;
+        }
+        
+        .result-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .result-box h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .result-box.error {
+            border-left-color: #e74c3c;
+            background: #fee;
+        }
+        
+        .result-box.success {
+            border-left-color: #2ecc71;
+            background: #efe;
+        }
+        
+        .result-content {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        
+        .result-content pre {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        
+        .info-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .required {
+            color: #e74c3c;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .config-info {
+            grid-column: 1 / -1;
+            background: #e8eaf6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .config-info h3 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📦 PB Presort Shipment Tester</h1>
+            <p>Create and test PB Presort shipment labels</p>
+        </div>
+        
+        <form id="shipmentForm" class="content">
+            <!-- Configuration Info -->
+            <div class="config-info">
+                <h3>🔧 Your Configuration</h3>
+                <div class="info-badge">Developer ID: 85771237</div>
+                <div class="info-badge">Carrier ID: 987654321</div>
+                <div class="info-badge">Job Number: 500002</div>
+                <div class="info-badge">Environment: Sandbox</div>
+            </div>
+            
+            <!-- Service Configuration -->
+            <div class="form-section">
+                <h2>📋 Service Configuration</h2>
+                
+                <div class="form-group">
+                    <label>Service ID <span class="required">*</span></label>
+                    <select name="serviceId" required>
+                        <option value="STANDARD">STANDARD - Standard Mail</option>
+                        <option value="FCM">FCM - First Class Mail</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Parcel Type <span class="required">*</span></label>
+                    <select name="parcelType" required>
+                        <option value="LGENV">LGENV - Large Envelope</option>
+                        <option value="PKG">PKG - Package</option>
+                        <option value="LETTER">LETTER - Letter</option>
+                        <option value="FLAT">FLAT - Flat</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Label Size <span class="required">*</span></label>
+                    <select name="labelSize" required>
+                        <option value="DOC_6X4">6x4 inches</option>
+                        <option value="DOC_8X11">8.5x11 inches</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Label Format <span class="required">*</span></label>
+                    <select name="labelFormat" required>
+                        <option value="PDF">PDF</option>
+                        <option value="PNG">PNG</option>
+                        <option value="ZPL">ZPL</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Permit Information -->
+            <div class="form-section">
+                <h2>📜 Permit Information</h2>
+                
+                <div class="form-group">
+                    <label>Shipper ID <span class="required">*</span></label>
+                    <input type="text" name="shipperId" value="3800270633" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Permit Number <span class="required">*</span></label>
+                    <input type="text" name="permitNumber" value="PBPS" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Permit City <span class="required">*</span></label>
+                    <input type="text" name="permitCity" value="Stamford" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Permit State <span class="required">*</span></label>
+                    <input type="text" name="permitState" value="CT" required maxlength="2">
+                </div>
+            </div>
+            
+            <!-- From Address -->
+            <div class="form-section">
+                <h2>📤 From Address</h2>
+                
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <input type="text" name="fromCompany" value="Supplies">
+                </div>
+                
+                <div class="form-group">
+                    <label>Contact Name <span class="required">*</span></label>
+                    <input type="text" name="fromName" value="John Smith" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" name="fromPhone" value="303-555-0000">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="fromEmail" value="john@example.com">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Address <span class="required">*</span></label>
+                    <input type="text" name="fromAddress" value="27 Watervw Dr" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>City <span class="required">*</span></label>
+                        <input type="text" name="fromCity" value="Stamford" required>
+                    </div>
+                    <div class="form-group">
+                        <label>State <span class="required">*</span></label>
+                        <input type="text" name="fromState" value="CT" required maxlength="2">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>ZIP Code <span class="required">*</span></label>
+                    <input type="text" name="fromZip" value="06902" required>
+                </div>
+            </div>
+            
+            <!-- To Address -->
+            <div class="form-section">
+                <h2>📥 To Address</h2>
+                
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <input type="text" name="toCompany" value="Shop">
+                </div>
+                
+                <div class="form-group">
+                    <label>Contact Name <span class="required">*</span></label>
+                    <input type="text" name="toName" value="Mary Jones" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" name="toPhone" value="620-555-0000">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="toEmail" value="mary@example.com">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Address <span class="required">*</span></label>
+                    <input type="text" name="toAddress" value="1 Federal St" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>City <span class="required">*</span></label>
+                        <input type="text" name="toCity" value="Boston" required>
+                    </div>
+                    <div class="form-group">
+                        <label>State <span class="required">*</span></label>
+                        <input type="text" name="toState" value="MA" required maxlength="2">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>ZIP Code <span class="required">*</span></label>
+                    <input type="text" name="toZip" value="02110" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" name="toResidential"> Residential Address
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Parcel Details -->
+            <div class="form-section">
+                <h2>📦 Parcel Details</h2>
+                
+                <div class="form-group">
+                    <label>Weight (OZ) <span class="required">*</span></label>
+                    <input type="number" name="weight" value="3" step="0.1" min="0.1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Dimensions (Inches) <span class="required">*</span></label>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Length</label>
+                        <input type="number" name="length" value="12" step="0.1" min="0.1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Width</label>
+                        <input type="number" name="width" value="0.25" step="0.01" min="0.01" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Height</label>
+                    <input type="number" name="height" value="9" step="0.1" min="0.1" required>
+                </div>
+            </div>
+            
+            <!-- Optional Fields -->
+            <div class="form-section">
+                <h2>✏️ Optional Fields</h2>
+                
+                <div class="form-group">
+                    <label>Custom Message 1 (prints on label)</label>
+                    <input type="text" name="customMessage1" maxlength="50" placeholder="Max 50 characters">
+                </div>
+                
+                <div class="form-group">
+                    <label>Custom Message 2 (prints on label)</label>
+                    <input type="text" name="customMessage2" maxlength="50" placeholder="Max 50 characters">
+                </div>
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="submit-section">
+                <button type="submit" class="btn">🚀 Create Shipment</button>
+            </div>
+            
+            <!-- Loading Indicator -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p style="margin-top: 10px;">Creating shipment...</p>
+            </div>
+            
+            <!-- Result Section -->
+            <div class="result-section" id="resultSection" style="display: none;">
+                <div class="result-box" id="resultBox">
+                    <h3 id="resultTitle">Result</h3>
+                    <div class="result-content">
+                        <pre id="resultContent"></pre>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        document.getElementById('shipmentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Show loading
+            document.getElementById('loading').classList.add('active');
+            document.getElementById('resultSection').style.display = 'none';
+            document.querySelector('.btn').disabled = true;
+            
+            // Build request payload
+            const payload = {
+                fromAddress: {
+                    company: data.fromCompany,
+                    name: data.fromName,
+                    phone: data.fromPhone,
+                    email: data.fromEmail,
+                    residential: false,
+                    addressLines: [data.fromAddress],
+                    cityTown: data.fromCity,
+                    stateProvince: data.fromState,
+                    postalCode: data.fromZip,
+                    countryCode: "US"
+                },
+                toAddress: {
+                    company: data.toCompany,
+                    name: data.toName,
+                    phone: data.toPhone,
+                    email: data.toEmail,
+                    residential: data.toResidential === 'on',
+                    addressLines: [data.toAddress],
+                    cityTown: data.toCity,
+                    stateProvince: data.toState,
+                    postalCode: data.toZip,
+                    countryCode: "US"
+                },
+                parcel: {
+                    weight: {
+                        unitOfMeasurement: "OZ",
+                        weight: parseFloat(data.weight)
+                    },
+                    dimension: {
+                        unitOfMeasurement: "IN",
+                        length: parseFloat(data.length),
+                        width: parseFloat(data.width),
+                        height: parseFloat(data.height)
+                    }
+                },
+                rates: [{
+                    carrier: "PBPRESORT",
+                    serviceId: data.serviceId,
+                    parcelType: data.parcelType,
+                    currencyCode: "USD"
+                }],
+                documents: [{
+                    size: data.labelSize,
+                    printDialogOption: "NO_PRINT_DIALOG",
+                    type: "SHIPPING_LABEL",
+                    contentType: "URL",
+                    fileFormat: data.labelFormat
+                }],
+                shipmentOptions: [
+                    { name: "SHIPPER_ID", value: data.shipperId },
+                    { name: "PERMIT_NUMBER", value: data.permitNumber },
+                    { name: "PERMIT_CITY", value: data.permitCity },
+                    { name: "PERMIT_STATE", value: data.permitState },
+                    { name: "MINIMAL_ADDRESS_VALIDATION", value: "false" }
+                ]
+            };
+            
+            // Add custom messages if provided
+            if (data.customMessage1) {
+                payload.shipmentOptions.push({ name: "PRINT_CUSTOM_MESSAGE_1", value: data.customMessage1 });
+            }
+            if (data.customMessage2) {
+                payload.shipmentOptions.push({ name: "PRINT_CUSTOM_MESSAGE_2", value: data.customMessage2 });
+            }
+            
+            // Make actual API call to backend
+            try {
+                const response = await fetch('/api/create-shipment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                document.getElementById('loading').classList.remove('active');
+                document.querySelector('.btn').disabled = false;
+                
+                if (result.success) {
+                    // Success!
+                    const shipment = result.data;
+                    const successMessage = {
+                        "✅ Shipment Created Successfully!": "",
+                        "": "",
+                        "Shipment ID": shipment.shipmentId,
+                        "Tracking Number": shipment.parcelTrackingNumber,
+                        "": "",
+                        "Label Information": {
+                            "Format": shipment.documents[0].fileFormat,
+                            "Size": shipment.documents[0].size,
+                            "URL": shipment.documents[0].contents
+                        },
+                        "": "",
+                        "Rates": {
+                            "Service": shipment.rates[0].serviceId,
+                            "Parcel Type": shipment.rates[0].parcelType,
+                            "Base Charge": "$" + shipment.rates[0].baseCharge.toFixed(2),
+                            "Total Charge": "$" + shipment.rates[0].totalCarrierCharge.toFixed(2),
+                            "Destination Zone": shipment.rates[0].destinationZone
+                        },
+                        "": "",
+                        "Validated From Address": {
+                            "Address": shipment.fromAddress.addressLines.join(', '),
+                            "City": shipment.fromAddress.cityTown + ", " + shipment.fromAddress.stateProvince + " " + shipment.fromAddress.postalCode
+                        },
+                        "Validated To Address": {
+                            "Address": shipment.toAddress.addressLines.join(', '),
+                            "City": shipment.toAddress.cityTown + ", " + shipment.toAddress.stateProvince + " " + shipment.toAddress.postalCode
+                        },
+                        "": "",
+                        "📦 Next Steps": "Download your label from the URL above and print it!"
+                    };
+                    
+                    displayResult('✅ Shipment Created Successfully!', JSON.stringify(successMessage, null, 2), 'success');
+                    
+                    // Also show a clickable link
+                    setTimeout(() => {
+                        const labelUrl = shipment.documents[0].contents;
+                        const linkHtml = `
+                            <div style="margin-top: 20px; padding: 15px; background: #f0f8ff; border-radius: 5px; text-align: center;">
+                                <p style="margin-bottom: 10px; font-weight: bold;">📄 Your Label is Ready!</p>
+                                <a href="${labelUrl}" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                                    Download Label (${shipment.documents[0].fileFormat})
+                                </a>
+                            </div>
+                        `;
+                        document.querySelector('.result-content').innerHTML += linkHtml;
+                    }, 100);
+                    
+                } else {
+                    // Error
+                    const errorMessage = {
+                        "❌ Shipment Creation Failed": "",
+                        "Error": result.error,
+                        "Details": result.details || "See server logs for more information"
+                    };
+                    displayResult('❌ Error Creating Shipment', JSON.stringify(errorMessage, null, 2), 'error');
+                }
+                
+            } catch (error) {
+                document.getElementById('loading').classList.remove('active');
+                document.querySelector('.btn').disabled = false;
+                
+                const errorMessage = {
+                    "❌ Request Failed": "",
+                    "Error": error.message,
+                    "Possible Causes": [
+                        "Server may not be running",
+                        "Network connection issue",
+                        "API credentials invalid"
+                    ],
+                    "Solution": "Check the terminal where 'node presort-server.js' is running"
+                };
+                displayResult('❌ Connection Error', JSON.stringify(errorMessage, null, 2), 'error');
+            }
+        });
+        
+        function displayResult(title, content, type = 'success') {
+            const resultSection = document.getElementById('resultSection');
+            const resultBox = document.getElementById('resultBox');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultContent = document.getElementById('resultContent');
+            
+            resultTitle.textContent = title;
+            resultContent.textContent = content;
+            
+            resultBox.classList.remove('success', 'error', 'info');
+            if (type === 'error') {
+                resultBox.classList.add('error');
+            } else if (type === 'success') {
+                resultBox.classList.add('success');
+            }
+            
+            resultSection.style.display = 'block';
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>
+

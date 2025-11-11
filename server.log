@@ -1,0 +1,413 @@
+
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║  🚀 PB Presort Testing Server Running                         ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+
+  📱 Open your browser to: http://localhost:8080
+  
+  🔧 Configuration:
+     Developer ID: 85771237
+     Carrier ID: 987654321
+     Job Number: 500002
+  
+  📖 Documentation:
+     https://docs.shippingapi.pitneybowes.com/api/post-shipments-pb-presort.html
+  
+  Press Ctrl+C to stop the server
+  
+
+
+📦 Received shipment request from UI
+Request body: {
+  "serviceId": "FCM",
+  "parcelType": "FLAT",
+  "labelSize": "DOC_6X4",
+  "labelFormat": "PDF",
+  "shipperId": "3800270633",
+  "permitNumber": "PBPS",
+  "permitCity": "Stamford",
+  "permitState": "CT",
+  "fromCompany": "Supplies",
+  "fromName": "John Smith",
+  "fromPhone": "303-555-0000",
+  "fromEmail": "john@example.com",
+  "fromAddress": "27 Watervw Dr",
+  "fromCity": "Stamford",
+  "fromState": "CT",
+  "fromZip": "06902",
+  "toCompany": "Shop",
+  "toName": "Mary Jones",
+  "toPhone": "620-555-0000",
+  "toEmail": "mary@example.com",
+  "toAddress": "1 Federal St",
+  "toCity": "Boston",
+  "toState": "MA",
+  "toZip": "02110",
+  "weight": "3",
+  "length": "12",
+  "width": "0.25",
+  "height": "9",
+  "customMessage1": "",
+  "customMessage2": ""
+}
+
+╔══════════════════════════════════════════════════════════════╗
+║           PB Presort Shipment (Direct API)                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+🔐 Obtaining access token...
+✓ Successfully obtained access token
+✓ Access token obtained
+
+📦 Creating shipment...
+  Transaction ID: TX-1762820943188-af8ppeeh
+  Service: FCM (FLAT)
+
+✗ Error creating shipment
+  Status: 400
+  Response: {
+  "errors": [
+    {
+      "errorCode": "1021141",
+      "errorDescription": "Invalid combination of Service Id and Parcel type.",
+      "additionalInfo": "Invalid combination of Service Id and Parcel type.",
+      "parameters": []
+    }
+  ]
+}
+❌ Shipment creation failed: Invalid combination of Service Id and Parcel type.
+Stack: Error: Invalid combination of Service Id and Parcel type.
+    at IncomingMessage.<anonymous> (/Users/shiphero/Desktop/pitneybowes-shipping-api-nodejs/presort-direct.js:164:22)
+    at IncomingMessage.emit (node:events:520:35)
+    at endReadableNT (node:internal/streams/readable:1701:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+
+📦 Received shipment request from UI
+Request body: {
+  "serviceId": "FCM",
+  "parcelType": "LETTER",
+  "labelSize": "DOC_6X4",
+  "labelFormat": "PDF",
+  "shipperId": "3800270633",
+  "permitNumber": "PBPS",
+  "permitCity": "Stamford",
+  "permitState": "CT",
+  "fromCompany": "Supplies",
+  "fromName": "John Smith",
+  "fromPhone": "303-555-0000",
+  "fromEmail": "john@example.com",
+  "fromAddress": "27 Watervw Dr",
+  "fromCity": "Stamford",
+  "fromState": "CT",
+  "fromZip": "06902",
+  "toCompany": "Shop",
+  "toName": "Mary Jones",
+  "toPhone": "620-555-0000",
+  "toEmail": "mary@example.com",
+  "toAddress": "1 Federal St",
+  "toCity": "Boston",
+  "toState": "MA",
+  "toZip": "02110",
+  "weight": "3",
+  "length": "12",
+  "width": "0.25",
+  "height": "9",
+  "customMessage1": "",
+  "customMessage2": ""
+}
+
+╔══════════════════════════════════════════════════════════════╗
+║           PB Presort Shipment (Direct API)                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+🔐 Obtaining access token...
+✓ Successfully obtained access token
+✓ Access token obtained
+
+📦 Creating shipment...
+  Transaction ID: TX-1762820959313-o97bplr0
+  Service: FCM (LETTER)
+
+✗ Error creating shipment
+  Status: 400
+  Response: {
+  "errors": [
+    {
+      "errorCode": "1029004",
+      "errorDescription": "Height is greater than maximum allowed.",
+      "additionalInfo": "Height is greater than maximum allowed.",
+      "parameters": []
+    }
+  ]
+}
+❌ Shipment creation failed: Height is greater than maximum allowed.
+Stack: Error: Height is greater than maximum allowed.
+    at IncomingMessage.<anonymous> (/Users/shiphero/Desktop/pitneybowes-shipping-api-nodejs/presort-direct.js:164:22)
+    at IncomingMessage.emit (node:events:520:35)
+    at endReadableNT (node:internal/streams/readable:1701:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+
+📦 Received shipment request from UI
+Request body: {
+  "serviceId": "FCM",
+  "parcelType": "LETTER",
+  "labelSize": "DOC_6X4",
+  "labelFormat": "PDF",
+  "shipperId": "3800270633",
+  "permitNumber": "PBPS",
+  "permitCity": "Stamford",
+  "permitState": "CT",
+  "fromCompany": "Supplies",
+  "fromName": "John Smith",
+  "fromPhone": "303-555-0000",
+  "fromEmail": "john@example.com",
+  "fromAddress": "27 Watervw Dr",
+  "fromCity": "Stamford",
+  "fromState": "CT",
+  "fromZip": "06902",
+  "toCompany": "Shop",
+  "toName": "Mary Jones",
+  "toPhone": "620-555-0000",
+  "toEmail": "mary@example.com",
+  "toAddress": "1 Federal St",
+  "toCity": "Boston",
+  "toState": "MA",
+  "toZip": "02110",
+  "weight": "3",
+  "length": "7",
+  "width": "0.25",
+  "height": "5",
+  "customMessage1": "",
+  "customMessage2": ""
+}
+
+╔══════════════════════════════════════════════════════════════╗
+║           PB Presort Shipment (Direct API)                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+🔐 Obtaining access token...
+✓ Successfully obtained access token
+✓ Access token obtained
+
+📦 Creating shipment...
+  Transaction ID: TX-1762820977824-r9hswqfw
+  Service: FCM (LETTER)
+
+✓ Shipment created successfully!
+
+Shipment Details:
+  Shipment ID: PBPRESORT2200615037793986
+  Tracking Number: 00270987654321290538
+  Base Charge: $0
+  Total Charge: $0
+  Destination Zone: 2
+
+Label:
+  Format: PDF
+  Size: DOC_6X4
+  URL: https://stg-labels.gcs.pitneybowes.com/7534eb81548c432eb4c93843287bb63b.pdf
+
+Validated Addresses:
+  From: 27 Watervw Dr
+        Stamford, CT 06902-1267
+  To:   1 Federal St
+        Boston, MA 02110-2012
+
+📦 Received shipment request from UI
+Request body: {
+  "serviceId": "FCM",
+  "parcelType": "LETTER",
+  "labelSize": "DOC_6X4",
+  "labelFormat": "PDF",
+  "shipperId": "3800270633",
+  "permitNumber": "PBPS",
+  "permitCity": "Stamford",
+  "permitState": "CT",
+  "fromCompany": "Shiphero",
+  "fromName": "Alex Lewkowict",
+  "fromPhone": "303-555-0000",
+  "fromEmail": "john@example.com",
+  "fromAddress": "27 Watervw Dr",
+  "fromCity": "Stamford",
+  "fromState": "CT",
+  "fromZip": "06902",
+  "toCompany": "Selery",
+  "toName": "Alex Lewkowict",
+  "toPhone": "620-555-0000",
+  "toEmail": "mary@example.com",
+  "toAddress": "1 Federal St",
+  "toCity": "Boston",
+  "toState": "MA",
+  "toZip": "02110",
+  "weight": "3",
+  "length": "7",
+  "width": "0.25",
+  "height": "5",
+  "customMessage1": "",
+  "customMessage2": ""
+}
+
+╔══════════════════════════════════════════════════════════════╗
+║           PB Presort Shipment (Direct API)                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+🔐 Obtaining access token...
+✓ Successfully obtained access token
+✓ Access token obtained
+
+📦 Creating shipment...
+  Transaction ID: TX-1762821009901-4j13ytuk
+  Service: FCM (LETTER)
+
+✓ Shipment created successfully!
+
+Shipment Details:
+  Shipment ID: PBPRESORT2200615134927953
+  Tracking Number: 00270987654321290539
+  Base Charge: $0
+  Total Charge: $0
+  Destination Zone: 2
+
+Label:
+  Format: PDF
+  Size: DOC_6X4
+  URL: https://stg-labels.gcs.pitneybowes.com/76a1d775ca6a4cc1a9b556636ae5e3a5.pdf
+
+Validated Addresses:
+  From: 27 Watervw Dr
+        Stamford, CT 06902-1267
+  To:   1 Federal St
+        Boston, MA 02110-2012
+
+📦 Received shipment request from UI
+Request body: {
+  "serviceId": "FCM",
+  "parcelType": "FLAT",
+  "labelSize": "DOC_6X4",
+  "labelFormat": "PDF",
+  "shipperId": "3800270633",
+  "permitNumber": "PBPS",
+  "permitCity": "Stamford",
+  "permitState": "CT",
+  "fromCompany": "Shiphero",
+  "fromName": "Alex Lewkowict",
+  "fromPhone": "303-555-0000",
+  "fromEmail": "john@example.com",
+  "fromAddress": "27 Watervw Dr",
+  "fromCity": "Stamford",
+  "fromState": "CT",
+  "fromZip": "06902",
+  "toCompany": "Selery",
+  "toName": "Alex Lewkowict",
+  "toPhone": "620-555-0000",
+  "toEmail": "mary@example.com",
+  "toAddress": "1 Federal St",
+  "toCity": "Boston",
+  "toState": "MA",
+  "toZip": "02110",
+  "weight": "3",
+  "length": "7",
+  "width": "0.25",
+  "height": "5",
+  "customMessage1": "",
+  "customMessage2": ""
+}
+
+╔══════════════════════════════════════════════════════════════╗
+║           PB Presort Shipment (Direct API)                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+🔐 Obtaining access token...
+✓ Successfully obtained access token
+✓ Access token obtained
+
+📦 Creating shipment...
+  Transaction ID: TX-1762821107804-j2ktvda0
+  Service: FCM (FLAT)
+
+✗ Error creating shipment
+  Status: 400
+  Response: {
+  "errors": [
+    {
+      "errorCode": "1021141",
+      "errorDescription": "Invalid combination of Service Id and Parcel type.",
+      "additionalInfo": "Invalid combination of Service Id and Parcel type.",
+      "parameters": []
+    }
+  ]
+}
+❌ Shipment creation failed: Invalid combination of Service Id and Parcel type.
+Stack: Error: Invalid combination of Service Id and Parcel type.
+    at IncomingMessage.<anonymous> (/Users/shiphero/Desktop/pitneybowes-shipping-api-nodejs/presort-direct.js:164:22)
+    at IncomingMessage.emit (node:events:520:35)
+    at endReadableNT (node:internal/streams/readable:1701:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+
+📦 Received shipment request from UI
+Request body: {
+  "serviceId": "FCM",
+  "parcelType": "LETTER",
+  "labelSize": "DOC_6X4",
+  "labelFormat": "PDF",
+  "shipperId": "3800270633",
+  "permitNumber": "PBPS",
+  "permitCity": "Stamford",
+  "permitState": "CT",
+  "fromCompany": "Shiphero",
+  "fromName": "Alex Lewkowict",
+  "fromPhone": "303-555-0000",
+  "fromEmail": "john@example.com",
+  "fromAddress": "27 Watervw Dr",
+  "fromCity": "Stamford",
+  "fromState": "CT",
+  "fromZip": "06902",
+  "toCompany": "Selery",
+  "toName": "Alex Lewkowict",
+  "toPhone": "620-555-0000",
+  "toEmail": "mary@example.com",
+  "toAddress": "1 Federal St",
+  "toCity": "Boston",
+  "toState": "MA",
+  "toZip": "02110",
+  "weight": "3",
+  "length": "7",
+  "width": "0.25",
+  "height": "5",
+  "customMessage1": "",
+  "customMessage2": ""
+}
+
+╔══════════════════════════════════════════════════════════════╗
+║           PB Presort Shipment (Direct API)                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+🔐 Obtaining access token...
+✓ Successfully obtained access token
+✓ Access token obtained
+
+📦 Creating shipment...
+  Transaction ID: TX-1762821121127-igz28n96
+  Service: FCM (LETTER)
+
+✓ Shipment created successfully!
+
+Shipment Details:
+  Shipment ID: PBPRESORT2200615037901693
+  Tracking Number: 00270987654321290540
+  Base Charge: $0
+  Total Charge: $0
+  Destination Zone: 2
+
+Label:
+  Format: PDF
+  Size: DOC_6X4
+  URL: https://stg-labels.gcs.pitneybowes.com/d9371080977f40b9bbc2fb95f6b3d37f.pdf
+
+Validated Addresses:
+  From: 27 Watervw Dr
+        Stamford, CT 06902-1267
+  To:   1 Federal St
+        Boston, MA 02110-2012
