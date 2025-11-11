@@ -475,7 +475,7 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Address Line 1 <span class="required">*</span></label>
-                            <input type="text" name="fromAddress1" value="1 Federal St" required>
+                            <input type="text" name="fromAddress" value="1 Federal St" required>
                         </div>
                         <div class="form-group">
                             <label>City <span class="required">*</span></label>
@@ -487,7 +487,7 @@
                         </div>
                         <div class="form-group">
                             <label>Postal Code <span class="required">*</span></label>
-                            <input type="text" name="fromPostal" value="02110" required>
+                            <input type="text" name="fromZip" value="02110" required>
                         </div>
                     </div>
                 </div>
@@ -519,7 +519,7 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Address Line 1 <span class="required">*</span></label>
-                            <input type="text" name="toAddress1" value="1 Federal St" required>
+                            <input type="text" name="toAddress" value="1 Federal St" required>
                         </div>
                         <div class="form-group">
                             <label>City <span class="required">*</span></label>
@@ -531,7 +531,7 @@
                         </div>
                         <div class="form-group">
                             <label>Postal Code <span class="required">*</span></label>
-                            <input type="text" name="toPostal" value="02110" required>
+                            <input type="text" name="toZip" value="02110" required>
                         </div>
                     </div>
                 </div>
@@ -710,74 +710,7 @@
             document.getElementById('result').classList.remove('show');
             document.querySelector('.btn-primary').disabled = true;
 
-            // Build shipment payload
-            const payload = {
-                fromAddress: {
-                    name: data.fromName,
-                    company: data.fromCompany,
-                    phone: data.fromPhone,
-                    email: data.fromEmail,
-                    residential: false,
-                    addressLines: [data.fromAddress1],
-                    cityTown: data.fromCity,
-                    stateProvince: data.fromState,
-                    postalCode: data.fromPostal,
-                    countryCode: "US"
-                },
-                toAddress: {
-                    name: data.toName,
-                    company: data.toCompany,
-                    phone: data.toPhone,
-                    email: data.toEmail,
-                    residential: false,
-                    addressLines: [data.toAddress1],
-                    cityTown: data.toCity,
-                    stateProvince: data.toState,
-                    postalCode: data.toPostal,
-                    countryCode: "US"
-                },
-                parcel: {
-                    weight: {
-                        unitOfMeasurement: "OZ",
-                        weight: parseFloat(data.weight)
-                    },
-                    dimension: {
-                        unitOfMeasurement: "IN",
-                        length: parseFloat(data.length),
-                        width: parseFloat(data.width),
-                        height: parseFloat(data.height)
-                    }
-                },
-                rates: [{
-                    carrier: "PBPRESORT",
-                    serviceId: data.serviceId,
-                    parcelType: data.parcelType,
-                    currencyCode: "USD"
-                }],
-                documents: [{
-                    size: data.labelSize,
-                    printDialogOption: "NO_PRINT_DIALOG",
-                    type: "SHIPPING_LABEL",
-                    contentType: "URL",
-                    fileFormat: "PDF"
-                }],
-                shipmentOptions: [
-                    { name: "SHIPPER_ID", value: data.shipperId },
-                    { name: "PERMIT_NUMBER", value: data.permitNumber },
-                    { name: "PERMIT_CITY", value: data.permitCity },
-                    { name: "PERMIT_STATE", value: data.permitState },
-                    { name: "MINIMAL_ADDRESS_VALIDATION", value: "false" }
-                ]
-            };
-
-            // Add optional messages
-            if (data.customMessage1) {
-                payload.shipmentOptions.push({ name: "PRINT_CUSTOM_MESSAGE_1", value: data.customMessage1 });
-            }
-            if (data.customMessage2) {
-                payload.shipmentOptions.push({ name: "PRINT_CUSTOM_MESSAGE_2", value: data.customMessage2 });
-            }
-
+            // Send flat form data - backend will transform it
             // Make API call
             try {
                 const response = await fetch('/api/create-shipment', {
@@ -785,7 +718,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(data)
                 });
 
                 // Check if response is JSON
