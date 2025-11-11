@@ -140,9 +140,10 @@
 
         /* Main Container */
         .container {
-            max-width: 1200px;
+            max-width: 95%;
+            width: 100%;
             margin: 0 auto;
-            padding: 3rem 2rem;
+            padding: 2rem;
         }
 
         .hero {
@@ -197,9 +198,13 @@
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 1.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-grid.full-width {
+            grid-template-columns: 1fr;
         }
 
         .form-group {
@@ -370,20 +375,115 @@
             font-weight: 600;
         }
 
-        .download-label {
-            display: inline-block;
-            margin-top: 1rem;
+        .result-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-result {
             padding: 12px 24px;
-            background: var(--accent);
-            color: white;
             border-radius: 8px;
             text-decoration: none;
             transition: all 0.2s;
+            font-weight: 600;
+            cursor: pointer;
         }
 
-        .download-label:hover {
-            background: var(--accent-hover);
+        .btn-download {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: #059669;
             transform: translateY(-2px);
+        }
+
+        .btn-view-payload {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-view-payload:hover {
+            background: var(--bg-primary);
+            border-color: var(--accent);
+        }
+
+        /* Payload Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow: auto;
+            padding: 2rem;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+        }
+
+        .modal-close {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-primary);
+            border-color: var(--accent);
+        }
+
+        .payload-display {
+            background: var(--bg-primary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow: auto;
+        }
+
+        .payload-display pre {
+            margin: 0;
+            color: var(--text-primary);
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
 
         /* Footer */
@@ -412,6 +512,15 @@
 
             header {
                 padding: 1rem;
+            }
+
+            .result-actions {
+                flex-direction: column;
+            }
+
+            .btn-result {
+                width: 100%;
+                text-align: center;
             }
         }
     </style>
@@ -444,103 +553,86 @@
         <div class="container">
             <div class="hero">
                 <h1>Create <span class="gradient-text">Presort Shipment</span></h1>
-                <p>Fast, simple, and powerful shipping label generation</p>
             </div>
 
             <form id="shipment-form">
-                <!-- From Address -->
+                <!-- Addresses -->
                 <div class="form-container">
                     <div class="section-header">
-                        <h2>📍 From Address</h2>
-                        <p>Sender information</p>
+                        <h2>📍 Addresses</h2>
                     </div>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Name <span class="required">*</span></label>
+                            <label>From Name <span class="required">*</span></label>
                             <input type="text" name="fromName" value="John Smith" required>
                         </div>
                         <div class="form-group">
-                            <label>Company</label>
-                            <input type="text" name="fromCompany" value="Supplies">
-                        </div>
-                        <div class="form-group">
-                            <label>Phone</label>
-                            <input type="tel" name="fromPhone" value="303-555-0000">
-                        </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" name="fromEmail" value="john@example.com">
-                        </div>
-                    </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Address Line 1 <span class="required">*</span></label>
-                            <input type="text" name="fromAddress" value="1 Federal St" required>
-                        </div>
-                        <div class="form-group">
-                            <label>City <span class="required">*</span></label>
-                            <input type="text" name="fromCity" value="Boston" required>
-                        </div>
-                        <div class="form-group">
-                            <label>State <span class="required">*</span></label>
-                            <input type="text" name="fromState" value="MA" maxlength="2" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Postal Code <span class="required">*</span></label>
-                            <input type="text" name="fromZip" value="02110" required>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- To Address -->
-                <div class="form-container">
-                    <div class="section-header">
-                        <h2>📍 To Address</h2>
-                        <p>Recipient information</p>
-                    </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Name <span class="required">*</span></label>
+                            <label>To Name <span class="required">*</span></label>
                             <input type="text" name="toName" value="Mary Jones" required>
                         </div>
                         <div class="form-group">
-                            <label>Company</label>
+                            <label>From Company</label>
+                            <input type="text" name="fromCompany" value="Supplies">
+                        </div>
+                        <div class="form-group">
+                            <label>To Company</label>
                             <input type="text" name="toCompany" value="Shop">
                         </div>
                         <div class="form-group">
-                            <label>Phone</label>
-                            <input type="tel" name="toPhone" value="620-555-0000">
+                            <label>From Address <span class="required">*</span></label>
+                            <input type="text" name="fromAddress" value="1 Federal St" required>
                         </div>
                         <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" name="toEmail" value="mary@example.com">
-                        </div>
-                    </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Address Line 1 <span class="required">*</span></label>
+                            <label>To Address <span class="required">*</span></label>
                             <input type="text" name="toAddress" value="1 Federal St" required>
                         </div>
                         <div class="form-group">
-                            <label>City <span class="required">*</span></label>
+                            <label>From City <span class="required">*</span></label>
+                            <input type="text" name="fromCity" value="Boston" required>
+                        </div>
+                        <div class="form-group">
+                            <label>To City <span class="required">*</span></label>
                             <input type="text" name="toCity" value="Boston" required>
                         </div>
                         <div class="form-group">
-                            <label>State <span class="required">*</span></label>
+                            <label>From State <span class="required">*</span></label>
+                            <input type="text" name="fromState" value="MA" maxlength="2" required>
+                        </div>
+                        <div class="form-group">
+                            <label>To State <span class="required">*</span></label>
                             <input type="text" name="toState" value="MA" maxlength="2" required>
                         </div>
                         <div class="form-group">
-                            <label>Postal Code <span class="required">*</span></label>
+                            <label>From Zip <span class="required">*</span></label>
+                            <input type="text" name="fromZip" value="02110" required>
+                        </div>
+                        <div class="form-group">
+                            <label>To Zip <span class="required">*</span></label>
                             <input type="text" name="toZip" value="02110" required>
+                        </div>
+                        <div class="form-group">
+                            <label>From Phone</label>
+                            <input type="tel" name="fromPhone" value="303-555-0000">
+                        </div>
+                        <div class="form-group">
+                            <label>To Phone</label>
+                            <input type="tel" name="toPhone" value="620-555-0000">
+                        </div>
+                        <div class="form-group">
+                            <label>From Email</label>
+                            <input type="email" name="fromEmail" value="john@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>To Email</label>
+                            <input type="email" name="toEmail" value="mary@example.com">
                         </div>
                     </div>
                 </div>
 
-                <!-- Package Details -->
+                <!-- Package & Permit -->
                 <div class="form-container">
                     <div class="section-header">
-                        <h2>📦 Package Details</h2>
-                        <p>Dimensions and service options</p>
+                        <h2>📦 Package & Permit</h2>
                     </div>
                     <div class="form-grid">
                         <div class="form-group">
@@ -570,8 +662,6 @@
                                 <option value="DOC_8X11">8.5" x 11"</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="form-grid">
                         <div class="form-group">
                             <label>Length (in) <span class="required">*</span></label>
                             <input type="number" name="length" value="5" step="0.1" min="0.1" required>
@@ -584,16 +674,6 @@
                             <label>Height (in) <span class="required">*</span></label>
                             <input type="number" name="height" value="7" step="0.1" min="0.1" required>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Permit Information -->
-                <div class="form-container">
-                    <div class="section-header">
-                        <h2>📋 Permit Information</h2>
-                        <p>Required for presort shipping</p>
-                    </div>
-                    <div class="form-grid">
                         <div class="form-group">
                             <label>Shipper ID <span class="required">*</span></label>
                             <input type="text" name="shipperId" value="3800270633" required>
@@ -610,23 +690,13 @@
                             <label>Permit State <span class="required">*</span></label>
                             <input type="text" name="permitState" value="IL" maxlength="2" required>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Optional Fields -->
-                <div class="form-container">
-                    <div class="section-header">
-                        <h2>✏️ Optional Information</h2>
-                        <p>Additional label customization</p>
-                    </div>
-                    <div class="form-grid">
                         <div class="form-group">
                             <label>Custom Message 1</label>
-                            <input type="text" name="customMessage1" value="Order 123456" maxlength="50" placeholder="Max 50 characters">
+                            <input type="text" name="customMessage1" value="Order 123456" maxlength="50">
                         </div>
                         <div class="form-group">
                             <label>Custom Message 2</label>
-                            <input type="text" name="customMessage2" maxlength="50" placeholder="Max 50 characters">
+                            <input type="text" name="customMessage2" maxlength="50">
                         </div>
                     </div>
                 </div>
@@ -658,7 +728,25 @@
         </footer>
     </div>
 
+    <!-- Payload Modal -->
+    <div id="payload-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Payload</h3>
+                <button class="modal-close" onclick="closeModal()">Close</button>
+            </div>
+            <div class="payload-display">
+                <pre id="payload-content"></pre>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Store payloads
+        let lastRequestPayload = null;
+        let lastResponsePayload = null;
+        let lastLabelUrl = null;
+
         // Password Protection
         const CORRECT_PASSWORD = 'yolo';
         
@@ -710,6 +798,9 @@
             document.getElementById('result').classList.remove('show');
             document.querySelector('.btn-primary').disabled = true;
 
+            // Store request payload
+            lastRequestPayload = data;
+
             // Send flat form data - backend will transform it
             // Make API call
             try {
@@ -731,6 +822,12 @@
                     const text = await response.text();
                     console.error('Non-JSON response:', text);
                     throw new Error(`API returned non-JSON response. Status: ${response.status}. Response: ${text.substring(0, 200)}`);
+                }
+
+                // Store response payload
+                lastResponsePayload = result;
+                if (result.data && result.data.documents && result.data.documents[0]) {
+                    lastLabelUrl = result.data.documents[0].contents;
                 }
 
                 document.getElementById('loading').classList.remove('active');
@@ -756,41 +853,76 @@
 
             resultDiv.className = `result ${type} show`;
             titleDiv.textContent = title;
+            messageDiv.innerHTML = '';
 
             if (type === 'success') {
+                const shipment = data.data || {};
+                const tracking = shipment.parcelTrackingNumber || 'N/A';
+                const shipmentId = shipment.shipmentId || 'N/A';
+                const rate = shipment.rates && shipment.rates[0] ? shipment.rates[0] : {};
+                const charge = rate.totalCarrierCharge || 0;
+
                 detailsDiv.innerHTML = `
                     <div class="result-item">
                         <span class="result-label">Shipment ID</span>
-                        <span class="result-value">${data.shipmentId || 'N/A'}</span>
+                        <span class="result-value">${shipmentId}</span>
                     </div>
                     <div class="result-item">
                         <span class="result-label">Tracking Number</span>
-                        <span class="result-value">${data.trackingNumber || 'N/A'}</span>
+                        <span class="result-value">${tracking}</span>
                     </div>
                     <div class="result-item">
                         <span class="result-label">Total Charge</span>
-                        <span class="result-value">$${data.totalCharge || '0.00'}</span>
+                        <span class="result-value">$${charge.toFixed(2)}</span>
+                    </div>
+                    <div class="result-actions">
+                        ${lastLabelUrl ? `<a href="${lastLabelUrl}" target="_blank" class="btn-result btn-download">📄 Download Label</a>` : ''}
+                        <button onclick="viewPayload('request')" class="btn-result btn-view-payload">📤 View Request</button>
+                        <button onclick="viewPayload('response')" class="btn-result btn-view-payload">📥 View Response</button>
                     </div>
                 `;
-
-                if (data.labelUrl) {
-                    detailsDiv.innerHTML += `
-                        <div style="margin-top: 1rem; text-align: center;">
-                            <a href="${data.labelUrl}" target="_blank" class="download-label">
-                                📄 Download Label
-                            </a>
-                        </div>
-                    `;
-                }
             } else {
                 messageDiv.innerHTML = `<p style="color: var(--error);">${data.error || 'Unknown error occurred'}</p>`;
                 if (data.details) {
                     messageDiv.innerHTML += `<p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.5rem;">${data.details}</p>`;
                 }
+                detailsDiv.innerHTML = `
+                    <div class="result-actions">
+                        <button onclick="viewPayload('request')" class="btn-result btn-view-payload">📤 View Request</button>
+                        <button onclick="viewPayload('response')" class="btn-result btn-view-payload">📥 View Response</button>
+                    </div>
+                `;
             }
 
             resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
+
+        function viewPayload(type) {
+            const modal = document.getElementById('payload-modal');
+            const title = document.getElementById('modal-title');
+            const content = document.getElementById('payload-content');
+
+            if (type === 'request') {
+                title.textContent = '📤 Request Payload';
+                content.textContent = JSON.stringify(lastRequestPayload, null, 2);
+            } else {
+                title.textContent = '📥 Response Payload';
+                content.textContent = JSON.stringify(lastResponsePayload, null, 2);
+            }
+
+            modal.classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('payload-modal').classList.remove('show');
+        }
+
+        // Close modal on background click
+        document.getElementById('payload-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
     </script>
 </body>
 </html>
