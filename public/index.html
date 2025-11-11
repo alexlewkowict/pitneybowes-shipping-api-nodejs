@@ -265,7 +265,7 @@
                     <label>Service ID <span class="required">*</span></label>
                     <select name="serviceId" required>
                         <option value="STANDARD">STANDARD - Standard Mail</option>
-                        <option value="FCM">FCM - First Class Mail</option>
+                        <option value="FCM" selected>FCM - First Class Mail</option>
                     </select>
                 </div>
                 
@@ -274,7 +274,7 @@
                     <select name="parcelType" required>
                         <option value="LGENV">LGENV - Large Envelope</option>
                         <option value="PKG">PKG - Package</option>
-                        <option value="LETTER">LETTER - Letter</option>
+                        <option value="LETTER" selected>LETTER - Letter</option>
                         <option value="FLAT">FLAT - Flat</option>
                     </select>
                 </div>
@@ -458,7 +458,7 @@
                 
                 <div class="form-group">
                     <label>Custom Message 1 (prints on label)</label>
-                    <input type="text" name="customMessage1" maxlength="50" placeholder="Max 50 characters">
+                    <input type="text" name="customMessage1" value="Order 123456" maxlength="50" placeholder="Max 50 characters">
                 </div>
                 
                 <div class="form-group">
