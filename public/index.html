@@ -547,12 +547,15 @@
             <div class="header-content">
                 <div class="logo">📦 PB Presort</div>
                 <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="showPage('shipment')">📦 Shipments</button>
+                    <button class="btn btn-secondary" onclick="showPage('ratecard')">💰 Rate Card</button>
                     <button class="btn btn-secondary" onclick="logout()">Logout</button>
                 </div>
             </div>
         </header>
 
-        <div class="container">
+        <!-- Shipment Page -->
+        <div id="shipment-page" class="container">
             <div class="hero">
                 <h1>Create <span class="gradient-text">Presort Shipment</span></h1>
             </div>
@@ -728,6 +731,48 @@
         <footer>
             <p></p>
         </footer>
+        </div>
+
+        <!-- Rate Card Page -->
+        <div id="ratecard-page" class="container" style="display: none;">
+            <div class="hero">
+                <h1><span class="gradient-text">Rate Card</span> Management</h1>
+            </div>
+
+            <div class="form-container">
+                <div class="section-header">
+                    <h2>💰 USPS Marketing Mail Commercial Flats</h2>
+                    <p>Pricing includes postage, processing and logistics. Pricing is subject to change.</p>
+                </div>
+
+                <div style="margin-bottom: 2rem;">
+                    <button class="btn btn-primary" onclick="addRateTier()">➕ Add Tier</button>
+                    <button class="btn btn-secondary" onclick="resetRateCard()">🔄 Reset to Default</button>
+                    <button class="btn btn-secondary" onclick="saveRateCard()">💾 Save Changes</button>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table id="rate-table" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: var(--bg-secondary); border-bottom: 2px solid var(--border);">
+                                <th style="padding: 1rem; text-align: left;">Weight Not Over (oz)</th>
+                                <th style="padding: 1rem; text-align: left;">Price ($)</th>
+                                <th style="padding: 1rem; text-align: center;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rate-table-body">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 2rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border);">
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6;">
+                        <strong>Note:</strong> Pricing includes postage, processing and logistics. Mail without a valid delivery address may be returned or mailed at the retail USPS First Class Mail® Large Envelope rate. Booklets and large envelopes mailed at the retail rate may be subject to additional fees. Mail is subject to physical and content restrictions. Please speak with your account representative for additional details. Pricing is subject to change.
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Payload Modal -->
@@ -748,6 +793,29 @@
         let lastRequestPayload = null;
         let lastResponsePayload = null;
         let lastLabelUrl = null;
+
+        // Default Rate Card
+        const DEFAULT_RATE_CARD = [
+            { weight: 1, price: 1.19 },
+            { weight: 2, price: 1.19 },
+            { weight: 3, price: 1.19 },
+            { weight: 4, price: 1.19 },
+            { weight: 5, price: 1.24 },
+            { weight: 6, price: 1.29 },
+            { weight: 7, price: 1.34 },
+            { weight: 8, price: 1.39 },
+            { weight: 9, price: 1.44 },
+            { weight: 10, price: 1.49 },
+            { weight: 11, price: 1.54 },
+            { weight: 12, price: 1.59 },
+            { weight: 13, price: 1.64 },
+            { weight: 14, price: 1.69 },
+            { weight: 15, price: 1.74 },
+            { weight: 15.99, price: 1.79 }
+        ];
+
+        // Load rate card from localStorage or use default
+        let rateCard = JSON.parse(localStorage.getItem('rateCard')) || [...DEFAULT_RATE_CARD];
 
         // Password Protection
         const CORRECT_PASSWORD = 'yolo';
@@ -778,6 +846,7 @@
         if (sessionStorage.getItem('authenticated') === 'true') {
             document.getElementById('password-screen').classList.add('hidden');
             document.getElementById('main-app').style.display = 'block';
+            loadRateCardTable();
         }
 
         // Allow Enter key to submit password
@@ -863,6 +932,10 @@
                 const shipmentId = shipment.shipmentId || 'N/A';
                 const rate = shipment.rates && shipment.rates[0] ? shipment.rates[0] : {};
                 const charge = rate.totalCarrierCharge || 0;
+                
+                // Calculate rate from rate card
+                const weight = lastRequestPayload ? parseFloat(lastRequestPayload.weight) : 0;
+                const calculatedRate = calculateRateFromCard(weight);
 
                 detailsDiv.innerHTML = `
                     <div class="result-item">
@@ -874,9 +947,17 @@
                         <span class="result-value">${tracking}</span>
                     </div>
                     <div class="result-item">
-                        <span class="result-label">Total Charge</span>
-                        <span class="result-value">$${charge.toFixed(2)}</span>
+                        <span class="result-label">Weight</span>
+                        <span class="result-value">${weight} oz</span>
                     </div>
+                    <div class="result-item">
+                        <span class="result-label">Rate Card Price</span>
+                        <span class="result-value" style="color: var(--success); font-size: 1.25rem;">$${calculatedRate.toFixed(2)}</span>
+                    </div>
+                    ${charge > 0 ? `<div class="result-item">
+                        <span class="result-label">API Charge (Reference)</span>
+                        <span class="result-value" style="color: var(--text-secondary);">$${charge.toFixed(2)}</span>
+                    </div>` : ''}
                     <div class="result-actions">
                         ${lastLabelUrl ? `<a href="${lastLabelUrl}" target="_blank" class="btn-result btn-download">📄 Download Label</a>` : ''}
                         <button onclick="viewPayload('request')" class="btn-result btn-view-payload">📤 View Request</button>
@@ -925,6 +1006,99 @@
                 closeModal();
             }
         });
+
+        // Page Navigation
+        function showPage(page) {
+            document.getElementById('shipment-page').style.display = page === 'shipment' ? 'block' : 'none';
+            document.getElementById('ratecard-page').style.display = page === 'ratecard' ? 'block' : 'none';
+            
+            if (page === 'ratecard') {
+                loadRateCardTable();
+            }
+        }
+
+        // Rate Card Functions
+        function loadRateCardTable() {
+            const tbody = document.getElementById('rate-table-body');
+            tbody.innerHTML = '';
+
+            rateCard.forEach((tier, index) => {
+                const row = document.createElement('tr');
+                row.style.borderBottom = '1px solid var(--border)';
+                row.innerHTML = `
+                    <td style="padding: 1rem;">
+                        <input type="number" 
+                               value="${tier.weight}" 
+                               step="0.01" 
+                               min="0.01"
+                               onchange="updateRateTier(${index}, 'weight', this.value)"
+                               style="width: 120px; padding: 8px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 6px; color: var(--text-primary);">
+                    </td>
+                    <td style="padding: 1rem;">
+                        <input type="number" 
+                               value="${tier.price}" 
+                               step="0.01" 
+                               min="0"
+                               onchange="updateRateTier(${index}, 'price', this.value)"
+                               style="width: 120px; padding: 8px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 6px; color: var(--text-primary);">
+                    </td>
+                    <td style="padding: 1rem; text-align: center;">
+                        <button onclick="deleteRateTier(${index})" class="btn-secondary" style="padding: 8px 16px; border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border); cursor: pointer;">
+                            🗑️ Delete
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function updateRateTier(index, field, value) {
+            rateCard[index][field] = parseFloat(value);
+        }
+
+        function addRateTier() {
+            const lastTier = rateCard[rateCard.length - 1];
+            const newWeight = lastTier ? lastTier.weight + 1 : 1;
+            const newPrice = lastTier ? lastTier.price : 1.19;
+            
+            rateCard.push({ weight: newWeight, price: newPrice });
+            loadRateCardTable();
+        }
+
+        function deleteRateTier(index) {
+            if (confirm('Are you sure you want to delete this tier?')) {
+                rateCard.splice(index, 1);
+                loadRateCardTable();
+            }
+        }
+
+        function saveRateCard() {
+            // Sort by weight
+            rateCard.sort((a, b) => a.weight - b.weight);
+            localStorage.setItem('rateCard', JSON.stringify(rateCard));
+            loadRateCardTable();
+            alert('✅ Rate card saved successfully!');
+        }
+
+        function resetRateCard() {
+            if (confirm('Reset rate card to default values?')) {
+                rateCard = [...DEFAULT_RATE_CARD];
+                localStorage.setItem('rateCard', JSON.stringify(rateCard));
+                loadRateCardTable();
+                alert('✅ Rate card reset to default!');
+            }
+        }
+
+        function calculateRateFromCard(weight) {
+            // Find the appropriate tier (weight not over)
+            for (let tier of rateCard) {
+                if (weight <= tier.weight) {
+                    return tier.price;
+                }
+            }
+            // If over all tiers, use the last tier's price
+            return rateCard[rateCard.length - 1].price;
+        }
     </script>
 </body>
 </html>
