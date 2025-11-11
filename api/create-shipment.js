@@ -4,17 +4,34 @@
 
 const https = require('https');
 
-// Configuration from environment variables
+// Configuration from environment variables (required)
 const config = {
-  apiKey: process.env.PB_API_KEY || '0oa2jnd4gabhQa7I30h8',
-  apiSecret: process.env.PB_API_SECRET || 'DHaJjDfPA_ZNKWman1CXRFYApYc1NdFa0vE6QYtpytNVEVK99XlvdBTHL1eZqSqZ',
-  developerId: process.env.PB_DEVELOPER_ID || '85771237',
-  merchantId: process.env.PB_MERCHANT_ID || '3800270633',
-  carrierId: process.env.PB_CARRIER_ID || '987654321',
-  shipmentGroupId: process.env.PB_SHIPMENT_GROUP_ID || '500002',
-  permitId: process.env.PB_PERMIT_ID || 'PBPS',
+  apiKey: process.env.PB_API_KEY,
+  apiSecret: process.env.PB_API_SECRET,
+  developerId: process.env.PB_DEVELOPER_ID,
+  merchantId: process.env.PB_MERCHANT_ID,
+  carrierId: process.env.PB_CARRIER_ID,
+  shipmentGroupId: process.env.PB_SHIPMENT_GROUP_ID,
+  permitId: process.env.PB_PERMIT_ID,
   authUrl: 'https://api-sandbox.pitneybowes.com/oauth/token'
 };
+
+// Validate required environment variables
+const requiredEnvVars = [
+  'PB_API_KEY',
+  'PB_API_SECRET',
+  'PB_DEVELOPER_ID',
+  'PB_MERCHANT_ID',
+  'PB_CARRIER_ID',
+  'PB_SHIPMENT_GROUP_ID',
+  'PB_PERMIT_ID'
+];
+
+const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+if (missingVars.length > 0) {
+  console.error('Missing required environment variables:', missingVars.join(', '));
+  throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);
+}
 
 /**
  * Get OAuth2 access token
